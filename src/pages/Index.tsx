@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import HumanBodyModel from '@/components/HumanBodyModel';
-import HealthTracking from '@/components/HealthTracking';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -67,21 +66,17 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard" className="gap-2">
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
-            </TabsTrigger>
-            <TabsTrigger value="tracking" className="gap-2">
-              <Icon name="Activity" size={16} />
-              <span className="hidden sm:inline">Отслеживание</span>
             </TabsTrigger>
             <TabsTrigger value="medications" className="gap-2">
               <Icon name="Pill" size={16} />
               <span className="hidden sm:inline">Лекарства</span>
             </TabsTrigger>
             <TabsTrigger value="symptoms" className="gap-2">
-              <Icon name="User" size={16} />
+              <Icon name="Activity" size={16} />
               <span className="hidden sm:inline">Симптомы</span>
             </TabsTrigger>
             <TabsTrigger value="tests" className="gap-2">
@@ -89,7 +84,7 @@ const Index = () => {
               <span className="hidden sm:inline">Анализы</span>
             </TabsTrigger>
             <TabsTrigger value="profile" className="gap-2">
-              <Icon name="UserCircle" size={16} />
+              <Icon name="User" size={16} />
               <span className="hidden sm:inline">Профиль</span>
             </TabsTrigger>
           </TabsList>
@@ -173,10 +168,6 @@ const Index = () => {
                 ))}
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="tracking" className="space-y-6 animate-fade-in">
-            <HealthTracking />
           </TabsContent>
 
           <TabsContent value="medications" className="space-y-6 animate-fade-in">

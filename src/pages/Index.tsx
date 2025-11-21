@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
+import HumanBodyModel from '@/components/HumanBodyModel';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -232,6 +233,8 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="symptoms" className="space-y-6 animate-fade-in">
+            <HumanBodyModel />
+            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

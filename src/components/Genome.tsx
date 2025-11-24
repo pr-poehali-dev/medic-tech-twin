@@ -64,6 +64,56 @@ const Genome = () => {
   ];
 
   const geneticMarkers: Record<string, GeneticMarker[]> = {
+    hereditary: [
+      {
+        gene: 'Семейный анамнез',
+        variant: 'Сердечно-сосудистые заболевания',
+        status: 'variant',
+        risk: 'medium',
+        description: 'Дедушка по материнской линии — инфаркт миокарда в 62 года. Бабушка по отцовской линии — артериальная гипертензия с 55 лет.',
+        recommendations: ['Контроль артериального давления с 30 лет', 'Липидограмма ежегодно', 'ЭКГ и эхокардиография при симптомах', 'Ограничение соли и насыщенных жиров']
+      },
+      {
+        gene: 'Семейный анамнез',
+        variant: 'Сахарный диабет 2 типа',
+        status: 'variant',
+        risk: 'medium',
+        description: 'Мать — диабет 2 типа, диагностирован в 48 лет. Тетя по материнской линии — преддиабет.',
+        recommendations: ['Контроль глюкозы натощак и HbA1c ежегодно', 'Поддержание нормального веса (ИМТ 18.5-24.9)', 'Ограничение быстрых углеводов', 'Физическая активность минимум 150 мин/неделю']
+      },
+      {
+        gene: 'Семейный анамнез',
+        variant: 'Онкологические заболевания',
+        status: 'variant',
+        risk: 'medium',
+        description: 'Бабушка по материнской линии — рак молочной железы в 67 лет (неизвестно BRCA-статус). Дедушка по отцовской линии — рак легких в 70 лет (курильщик).',
+        recommendations: ['Маммография с 40 лет ежегодно (на 10 лет раньше стандартного)', 'МРТ молочных желез по показаниям', 'Генетическое тестирование BRCA1/2 рассмотреть', 'Отказ от курения (активного и пассивного)']
+      },
+      {
+        gene: 'Семейный анамнез',
+        variant: 'Щитовидная железа',
+        status: 'variant',
+        risk: 'low',
+        description: 'Мать — гипотиреоз, диагностирован в 45 лет. Тетя — узловой зоб.',
+        recommendations: ['Контроль ТТГ каждые 3-5 лет начиная с 35 лет', 'УЗИ щитовидной железы при отклонениях', 'Достаточное потребление йода']
+      },
+      {
+        gene: 'Семейный анамнез',
+        variant: 'Остеопороз',
+        status: 'normal',
+        risk: 'medium',
+        description: 'Бабушка по материнской линии — остеопороз, перелом шейки бедра в 72 года.',
+        recommendations: ['Денситометрия с 65 лет (или с менопаузы)', 'Достаточное потребление кальция (1000-1200 мг/день)', 'Витамин D (контроль уровня в крови)', 'Силовые упражнения для укрепления костей']
+      },
+      {
+        gene: 'Семейный анамнез',
+        variant: 'Желудочно-кишечный тракт',
+        status: 'normal',
+        risk: 'low',
+        description: 'Отец — язвенная болезнь желудка (H. pylori), вылечена. Нет случаев рака ЖКТ.',
+        recommendations: ['Тест на H. pylori при симптомах', 'Колоноскопия с 45 лет (стандартный скрининг)', 'Избегать НПВС натощак']
+      }
+    ],
     cardiovascular: [
       {
         gene: 'APOE',
@@ -340,7 +390,12 @@ const Genome = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+              <TabsTrigger value="hereditary" className="gap-1">
+                <Icon name="Users" size={14} />
+                <span className="hidden sm:inline">Семейный анамнез</span>
+                <span className="sm:hidden">Семья</span>
+              </TabsTrigger>
               <TabsTrigger value="cardiovascular" className="gap-1">
                 <Icon name="Heart" size={14} />
                 <span className="hidden sm:inline">Кардио</span>

@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Slider } from '@/components/ui/slider';
 import Icon from '@/components/ui/icon';
+import ThyroidModel from '@/components/anatomy/ThyroidModel';
+import ModelControls from '@/components/anatomy/ModelControls';
+import PathologyInfo from '@/components/anatomy/PathologyInfo';
 
 type ViewMode = 'normal' | 'hypothyroid' | 'compare';
 type RotationAxis = 'x' | 'y' | 'z';
@@ -136,188 +138,6 @@ const ThyroidAnatomy3D = () => {
     setRotation(prev => ({ ...prev, [axis]: value }));
   };
 
-  const getTransform = () => {
-    return `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
-  };
-
-  const renderThyroid = (isHypothyroid: boolean) => {
-    const opacity = 1 - transparency / 100;
-    
-    return (
-      <svg 
-        viewBox="0 0 360 400" 
-        className="w-full h-full"
-        style={{ transform: getTransform(), transformStyle: 'preserve-3d' }}
-      >
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <linearGradient id="normalGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#E07A5F" stopOpacity={opacity} />
-            <stop offset="100%" stopColor="#F4A261" stopOpacity={opacity} />
-          </linearGradient>
-          <linearGradient id="hypothyroidGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#9A6D63" stopOpacity={opacity} />
-            <stop offset="100%" stopColor="#8B7355" stopOpacity={opacity} />
-          </linearGradient>
-          <pattern id="texture" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-            <circle cx="5" cy="5" r="1" fill="rgba(0,0,0,0.1)" />
-          </pattern>
-        </defs>
-
-        {/* Trachea outline */}
-        <rect 
-          x="165" 
-          y="240" 
-          width="30" 
-          height="100" 
-          fill="none" 
-          stroke="#94A3B8" 
-          strokeWidth="2"
-          strokeDasharray="4,4"
-          opacity="0.3"
-        />
-        
-        {/* Right Lobe */}
-        <g
-          onClick={() => setSelectedPart('right-lobe')}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <path
-            d={thyroidParts[0].path}
-            fill={isHypothyroid ? "url(#hypothyroidGradient)" : "url(#normalGradient)"}
-            stroke={selectedPart === 'right-lobe' ? '#3B82F6' : '#64748B'}
-            strokeWidth={selectedPart === 'right-lobe' ? '3' : '2'}
-            filter={selectedPart === 'right-lobe' ? 'url(#glow)' : ''}
-          />
-          {isHypothyroid && (
-            <path d={thyroidParts[0].path} fill="url(#texture)" />
-          )}
-          {showLabels && (
-            <text x="140" y="180" fontSize="12" fill="white" fontWeight="bold" textAnchor="middle">
-              R
-            </text>
-          )}
-        </g>
-
-        {/* Left Lobe */}
-        <g
-          onClick={() => setSelectedPart('left-lobe')}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <path
-            d={thyroidParts[1].path}
-            fill={isHypothyroid ? "url(#hypothyroidGradient)" : "url(#normalGradient)"}
-            stroke={selectedPart === 'left-lobe' ? '#3B82F6' : '#64748B'}
-            strokeWidth={selectedPart === 'left-lobe' ? '3' : '2'}
-            filter={selectedPart === 'left-lobe' ? 'url(#glow)' : ''}
-          />
-          {isHypothyroid && (
-            <path d={thyroidParts[1].path} fill="url(#texture)" />
-          )}
-          {showLabels && (
-            <text x="220" y="180" fontSize="12" fill="white" fontWeight="bold" textAnchor="middle">
-              L
-            </text>
-          )}
-        </g>
-
-        {/* Isthmus */}
-        <g
-          onClick={() => setSelectedPart('isthmus')}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <path
-            d={thyroidParts[2].path}
-            fill={isHypothyroid ? thyroidParts[2].hypothyroidColor : thyroidParts[2].normalColor}
-            fillOpacity={opacity}
-            stroke={selectedPart === 'isthmus' ? '#3B82F6' : '#64748B'}
-            strokeWidth={selectedPart === 'isthmus' ? '3' : '2'}
-            filter={selectedPart === 'isthmus' ? 'url(#glow)' : ''}
-          />
-          {showLabels && (
-            <text x="180" y="192" fontSize="10" fill="white" textAnchor="middle">
-              Перешеек
-            </text>
-          )}
-        </g>
-
-        {/* Blood Vessels */}
-        <g
-          onClick={() => setSelectedPart('blood-vessels')}
-          className="cursor-pointer"
-          opacity={opacity}
-        >
-          {(isHypothyroid ? thyroidParts[3].pathHypothyroid : thyroidParts[3].pathNormal)?.map((path, idx) => (
-            <path
-              key={idx}
-              d={path}
-              fill="none"
-              stroke={isHypothyroid ? thyroidParts[3].hypothyroidColor : thyroidParts[3].normalColor}
-              strokeWidth={isHypothyroid ? '2' : '3'}
-              strokeLinecap="round"
-            />
-          ))}
-        </g>
-
-        {/* Follicles (microscopic representation) */}
-        {transparency < 50 && (
-          <g
-            onClick={() => setSelectedPart('follicles')}
-            className="cursor-pointer"
-            opacity={opacity * 0.6}
-          >
-            {thyroidParts[4].circles?.map((circle, idx) => (
-              <circle
-                key={idx}
-                cx={circle.cx}
-                cy={circle.cy}
-                r={isHypothyroid ? circle.r * 0.7 : circle.r}
-                fill={isHypothyroid ? thyroidParts[4].hypothyroidColor : thyroidParts[4].normalColor}
-                stroke="#64748B"
-                strokeWidth="1"
-              />
-            ))}
-          </g>
-        )}
-
-        {/* Pathology markers for hypothyroid */}
-        {isHypothyroid && transparency < 70 && (
-          <>
-            {/* Fibrosis areas */}
-            <ellipse cx="145" cy="160" rx="15" ry="10" fill="#6B7280" opacity="0.4" />
-            <ellipse cx="215" cy="210" rx="12" ry="8" fill="#6B7280" opacity="0.4" />
-            
-            {/* Inflammation markers */}
-            <circle cx="130" cy="190" r="4" fill="#F59E0B" opacity="0.7" />
-            <circle cx="160" cy="210" r="3" fill="#F59E0B" opacity="0.7" />
-            <circle cx="200" cy="170" r="3" fill="#F59E0B" opacity="0.7" />
-            <circle cx="225" cy="195" r="4" fill="#F59E0B" opacity="0.7" />
-          </>
-        )}
-
-        {/* Anatomical labels */}
-        {showLabels && (
-          <>
-            <line x1="120" y1="150" x2="80" y2="120" stroke="#94A3B8" strokeWidth="1" />
-            <text x="75" y="115" fontSize="10" fill="#94A3B8">Верхний полюс</text>
-            
-            <line x1="120" y1="220" x2="80" y2="260" stroke="#94A3B8" strokeWidth="1" />
-            <text x="75" y="270" fontSize="10" fill="#94A3B8">Нижний полюс</text>
-            
-            <line x1="180" y1="240" x2="180" y2="290" stroke="#94A3B8" strokeWidth="1" />
-            <text x="170" y="305" fontSize="10" fill="#94A3B8">Трахея</text>
-          </>
-        )}
-      </svg>
-    );
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -382,7 +202,15 @@ const ThyroidAnatomy3D = () => {
           </CardHeader>
           <CardContent>
             <div className="aspect-square bg-slate-950 rounded-lg overflow-hidden">
-              {renderThyroid(viewMode === 'compare' ? false : viewMode === 'hypothyroid')}
+              <ThyroidModel
+                isHypothyroid={viewMode === 'compare' ? false : viewMode === 'hypothyroid'}
+                rotation={rotation}
+                transparency={transparency}
+                showLabels={showLabels}
+                selectedPart={selectedPart}
+                setSelectedPart={setSelectedPart}
+                thyroidParts={thyroidParts}
+              />
             </div>
           </CardContent>
         </Card>
@@ -400,7 +228,15 @@ const ThyroidAnatomy3D = () => {
             </CardHeader>
             <CardContent>
               <div className="aspect-square bg-slate-950 rounded-lg overflow-hidden">
-                {renderThyroid(true)}
+                <ThyroidModel
+                  isHypothyroid={true}
+                  rotation={rotation}
+                  transparency={transparency}
+                  showLabels={showLabels}
+                  selectedPart={selectedPart}
+                  setSelectedPart={setSelectedPart}
+                  thyroidParts={thyroidParts}
+                />
               </div>
             </CardContent>
           </Card>
@@ -408,89 +244,16 @@ const ThyroidAnatomy3D = () => {
       </div>
 
       {/* Controls */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Icon name="Settings" size={20} />
-            Управление моделью
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center justify-between">
-                <span>Вращение X: {rotation.x}°</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRotate('x', 20)}
-                >
-                  <Icon name="RotateCw" size={14} />
-                </Button>
-              </label>
-              <Slider
-                value={[rotation.x]}
-                onValueChange={([value]) => handleRotate('x', value)}
-                min={-180}
-                max={180}
-                step={1}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center justify-between">
-                <span>Вращение Y: {rotation.y}°</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRotate('y', 30)}
-                >
-                  <Icon name="RotateCw" size={14} />
-                </Button>
-              </label>
-              <Slider
-                value={[rotation.y]}
-                onValueChange={([value]) => handleRotate('y', value)}
-                min={-180}
-                max={180}
-                step={1}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center justify-between">
-                <span>Прозрачность: {transparency}%</span>
-              </label>
-              <Slider
-                value={[transparency]}
-                onValueChange={([value]) => setTransparency(value)}
-                min={0}
-                max={90}
-                step={5}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Button
-                variant={autoRotate ? 'default' : 'outline'}
-                onClick={() => setAutoRotate(!autoRotate)}
-                className="flex-1 mr-2"
-              >
-                <Icon name={autoRotate ? 'Pause' : 'Play'} size={16} />
-                {autoRotate ? 'Остановить' : 'Автовращение'}
-              </Button>
-              <Button
-                variant={showLabels ? 'default' : 'outline'}
-                onClick={() => setShowLabels(!showLabels)}
-                className="flex-1"
-              >
-                <Icon name="Tag" size={16} />
-                Подписи
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <ModelControls
+        rotation={rotation}
+        transparency={transparency}
+        autoRotate={autoRotate}
+        showLabels={showLabels}
+        handleRotate={handleRotate}
+        setTransparency={setTransparency}
+        setAutoRotate={setAutoRotate}
+        setShowLabels={setShowLabels}
+      />
 
       {/* Selected Part Details */}
       {selectedPart && (
@@ -537,123 +300,7 @@ const ThyroidAnatomy3D = () => {
       )}
 
       {/* Pathology Markers */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Icon name="Activity" size={20} />
-            Патологические изменения
-          </CardTitle>
-          <CardDescription>
-            Основные признаки гипотиреоза на анатомическом уровне
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            {pathologyMarkers.map((marker, idx) => (
-              <Card key={idx}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-3">
-                    <Icon name={marker.icon as any} className={marker.color} size={24} />
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-semibold text-sm">{marker.name}</h4>
-                        <Badge variant="outline">{marker.severity}</Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {marker.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Key Differences Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Icon name="GitCompare" size={20} />
-            Сравнительная таблица изменений
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="grid grid-cols-3 gap-4 pb-2 border-b font-medium text-sm">
-              <div>Параметр</div>
-              <div className="text-green-600">Норма</div>
-              <div className="text-orange-600">Гипотиреоз</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-muted-foreground">Размер долей</div>
-              <div>4-6 см</div>
-              <div>3-4 см ↓</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-muted-foreground">Объем железы</div>
-              <div>15-25 мл</div>
-              <div>10-18 мл ↓</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-muted-foreground">Кровоток</div>
-              <div>100% (норма)</div>
-              <div>60-70% ↓</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-muted-foreground">Эхоструктура</div>
-              <div>Однородная</div>
-              <div>Неоднородная</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-muted-foreground">Фолликулы</div>
-              <div>200-300 мкм</div>
-              <div>Атрофия/увеличение</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className="text-muted-foreground">Фиброз</div>
-              <div>Отсутствует</div>
-              <div>Присутствует</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-primary/5 border-primary/20">
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-3 text-sm">
-            <Icon name="Info" size={20} className="text-primary mt-0.5 flex-shrink-0" />
-            <div className="space-y-2">
-              <p className="font-medium">О 3D визуализации</p>
-              <ul className="space-y-1 text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Модель основана на реальных анатомических данных и результатах УЗИ</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Изменения соответствуют субклиническому гипотиреозу пациента</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Используйте слайдеры для детального изучения анатомии</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Кликайте на части железы для подробной информации</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <PathologyInfo pathologyMarkers={pathologyMarkers} />
     </div>
   );
 };

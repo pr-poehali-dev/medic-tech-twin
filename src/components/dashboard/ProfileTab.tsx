@@ -37,6 +37,17 @@ const ProfileTab = () => {
               <Input id="age" type="number" defaultValue="45" />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="occupation" className="flex items-center gap-2">
+                <Icon name="Briefcase" size={16} />
+                Место работы
+              </Label>
+              <Input id="occupation" placeholder="Должность, организация" defaultValue="Инженер, ООО Техпром" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Телефон</Label>
+              <Input id="phone" type="tel" defaultValue="+7 (999) 123-45-67" />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="blood">Группа крови</Label>
               <Input id="blood" defaultValue="A (II) Rh+" />
             </div>
@@ -47,10 +58,6 @@ const ProfileTab = () => {
             <div className="space-y-2">
               <Label htmlFor="weight">Вес (кг)</Label>
               <Input id="weight" type="number" defaultValue="80" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Телефон</Label>
-              <Input id="phone" type="tel" defaultValue="+7 (999) 123-45-67" />
             </div>
           </div>
 

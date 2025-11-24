@@ -105,6 +105,36 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
+            <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Icon name="Stethoscope" size={32} className="text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <h3 className="text-xl font-semibold">Здравствуйте! Как вы себя сегодня чувствуете?</h3>
+                    <p className="text-muted-foreground">
+                      Я ваш виртуальный врач-ассистент. Готов помочь отслеживать ваше здоровье и отвечать на вопросы.
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <Button size="sm" variant="default">
+                        <Icon name="ThumbsUp" size={16} />
+                        Отлично
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <Icon name="Meh" size={16} />
+                        Нормально
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <Icon name="ThumbsDown" size={16} />
+                        Плохо
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">

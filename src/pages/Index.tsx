@@ -10,6 +10,7 @@ import Prognosis from '@/components/Prognosis';
 import AIAssistant from '@/components/AIAssistant';
 import Genome from '@/components/Genome';
 import HealthSchedule from '@/components/HealthSchedule';
+import FitnessTracker from '@/components/FitnessTracker';
 import DashboardTab from '@/components/dashboard/DashboardTab';
 import MedicationsTab from '@/components/dashboard/MedicationsTab';
 import SymptomsTab from '@/components/dashboard/SymptomsTab';
@@ -78,6 +79,10 @@ const Index = () => {
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
             </TabsTrigger>
+            <TabsTrigger value="fitness" className="gap-2">
+              <Icon name="Watch" size={16} />
+              <span className="hidden sm:inline">Фитнес-часы</span>
+            </TabsTrigger>
             <TabsTrigger value="schedule" className="gap-2">
               <Icon name="CalendarCheck" size={16} />
               <span className="hidden sm:inline">График</span>
@@ -126,6 +131,10 @@ const Index = () => {
 
           <TabsContent value="dashboard">
             <DashboardTab aiRecommendations={aiRecommendations} />
+          </TabsContent>
+
+          <TabsContent value="fitness" className="space-y-6 animate-fade-in">
+            <FitnessTracker />
           </TabsContent>
 
           <TabsContent value="schedule" className="space-y-6 animate-fade-in">

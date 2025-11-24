@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import PatientInfo from '@/components/genome/PatientInfo';
+import ChromosomeMap from '@/components/genome/ChromosomeMap';
+import FamilyTreeView from '@/components/genome/FamilyTreeView';
+import GeneticMarkersTab from '@/components/genome/GeneticMarkersTab';
 
 interface GeneticMarker {
   gene: string;
@@ -357,42 +358,6 @@ const Genome = () => {
     ]
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'normal': return 'default';
-      case 'variant': return 'secondary';
-      case 'mutation': return 'destructive';
-      default: return 'default';
-    }
-  };
-
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case 'low': return 'default';
-      case 'medium': return 'secondary';
-      case 'high': return 'destructive';
-      default: return 'default';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'normal': return 'Норма';
-      case 'variant': return 'Вариант';
-      case 'mutation': return 'Мутация';
-      default: return 'Норма';
-    }
-  };
-
-  const getRiskLabel = (risk: string) => {
-    switch (risk) {
-      case 'low': return 'Низкий';
-      case 'medium': return 'Средний';
-      case 'high': return 'Высокий';
-      default: return 'Низкий';
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -402,92 +367,9 @@ const Genome = () => {
         </p>
       </div>
 
-      <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Icon name="Dna" size={24} />
-            Информация о пациенте
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">ФИО</p>
-              <p className="font-medium">{patientInfo.name}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Возраст</p>
-              <p className="font-medium">{patientInfo.age} лет</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Пол</p>
-              <p className="font-medium">{patientInfo.sex}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Этническая принадлежность</p>
-              <p className="font-medium">{patientInfo.ethnicity}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Группа крови</p>
-              <p className="font-medium">{patientInfo.bloodType}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Дата секвенирования</p>
-              <p className="font-medium">{patientInfo.sequencingDate}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Покрытие</p>
-              <p className="font-medium">{patientInfo.coverage}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Выявлено вариантов</p>
-              <p className="font-medium">{patientInfo.variants.toLocaleString()}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <PatientInfo patientInfo={patientInfo} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Icon name="Layers" size={24} />
-            Карта хромосом
-          </CardTitle>
-          <CardDescription>
-            Распределение генов и вариантов по хромосомам
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {chromosomes.map((chr) => (
-              <Card key={chr.number} className={chr.number === 'Y' ? 'opacity-50' : ''}>
-                <CardContent className="pt-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold">Chr {chr.number}</span>
-                    {chr.number === 'Y' && <Badge variant="outline" className="text-xs">N/A</Badge>}
-                  </div>
-                  {chr.number !== 'Y' && (
-                    <>
-                      <p className="text-xs text-muted-foreground">{chr.size}</p>
-                      <Separator />
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Гены:</span>
-                          <span className="font-medium">{chr.genes}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Варианты:</span>
-                          <span className="font-medium">{chr.variants.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <ChromosomeMap chromosomes={chromosomes} />
 
       <Card>
         <CardHeader>
@@ -530,221 +412,13 @@ const Genome = () => {
             </TabsList>
 
             <TabsContent value="hereditary" className="space-y-4 mt-4">
-              <Card className="bg-gradient-to-br from-primary/5 to-background">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Icon name="GitBranch" size={20} />
-                    Семейное древо заболеваний
-                  </CardTitle>
-                  <CardDescription>
-                    Визуализация наследственных заболеваний в семье
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-8">
-                    {[0, 1, 2].map((generation) => {
-                      const members = familyTree.filter(m => m.generation === generation);
-                      const generationLabel = generation === 0 ? 'Бабушки и дедушки' : generation === 1 ? 'Родители' : 'Пациент';
-                      
-                      return (
-                        <div key={generation} className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              Поколение {generation + 1}
-                            </Badge>
-                            <span className="text-sm text-muted-foreground">{generationLabel}</span>
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                            {members.map((member) => (
-                              <Card 
-                                key={member.id} 
-                                className={`${member.id === 'patient' ? 'border-primary border-2' : ''} ${member.deceased ? 'opacity-60' : ''}`}
-                              >
-                                <CardContent className="pt-4 space-y-3">
-                                  <div className="flex items-start justify-between gap-2">
-                                    <div className="flex items-center gap-2">
-                                      <Icon 
-                                        name={member.id === 'patient' ? 'UserCircle' : 'User'} 
-                                        size={20} 
-                                        className={member.id === 'patient' ? 'text-primary' : 'text-muted-foreground'}
-                                      />
-                                      <div>
-                                        <h5 className="font-medium text-sm">{member.name}</h5>
-                                        <p className="text-xs text-muted-foreground">{member.relation}</p>
-                                      </div>
-                                    </div>
-                                    {member.deceased && (
-                                      <Badge variant="secondary" className="text-xs">✝</Badge>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                    <Icon name="Calendar" size={12} />
-                                    <span>{member.age} {member.deceased ? 'лет (умер)' : 'лет'}</span>
-                                  </div>
-
-                                  {member.diseases.length > 0 ? (
-                                    <div className="space-y-2">
-                                      <Separator />
-                                      <div className="space-y-1.5">
-                                        {member.diseases.map((disease, idx) => (
-                                          <div key={idx} className="space-y-1">
-                                            <div className="flex items-start gap-2">
-                                              <Icon 
-                                                name={
-                                                  disease.status === 'resolved' ? 'CheckCircle2' : 
-                                                  disease.status === 'controlled' ? 'ShieldCheck' : 
-                                                  'AlertCircle'
-                                                } 
-                                                size={14} 
-                                                className={
-                                                  disease.status === 'resolved' ? 'text-green-500 mt-0.5' : 
-                                                  disease.status === 'controlled' ? 'text-blue-500 mt-0.5' : 
-                                                  'text-destructive mt-0.5'
-                                                }
-                                              />
-                                              <div className="flex-1">
-                                                <p className="text-xs font-medium">{disease.name}</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                  В {disease.ageOnset} лет
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <div className="text-xs text-muted-foreground italic pt-2 border-t">
-                                      Нет известных заболеваний
-                                    </div>
-                                  )}
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <Separator className="my-6" />
-
-                  <div className="space-y-3">
-                    <h4 className="text-sm font-medium flex items-center gap-2">
-                      <Icon name="Info" size={16} />
-                      Легенда статусов заболеваний
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Icon name="AlertCircle" size={16} className="text-destructive" />
-                        <span className="text-muted-foreground">Активное заболевание</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Icon name="ShieldCheck" size={16} className="text-blue-500" />
-                        <span className="text-muted-foreground">Под контролем</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Icon name="CheckCircle2" size={16} className="text-green-500" />
-                        <span className="text-muted-foreground">Вылечено</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {geneticMarkers.hereditary.map((marker, idx) => (
-                <Card key={idx}>
-                  <CardContent className="pt-6 space-y-3">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-2 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="font-semibold text-lg">{marker.gene}</h4>
-                          <Badge variant={getStatusColor(marker.status) as any}>
-                            {getStatusLabel(marker.status)}
-                          </Badge>
-                          <Badge variant={getRiskColor(marker.risk) as any}>
-                            Риск: {getRiskLabel(marker.risk)}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground font-mono">
-                          {marker.variant}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-sm">{marker.description}</p>
-
-                    {marker.recommendations.length > 0 && (
-                      <>
-                        <Separator />
-                        <div className="space-y-2">
-                          <h5 className="text-sm font-medium flex items-center gap-2">
-                            <Icon name="Lightbulb" size={16} />
-                            Рекомендации
-                          </h5>
-                          <ul className="space-y-1">
-                            {marker.recommendations.map((rec, rIdx) => (
-                              <li key={rIdx} className="text-sm text-muted-foreground flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>{rec}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+              <FamilyTreeView familyTree={familyTree} />
+              <GeneticMarkersTab markers={geneticMarkers.hereditary} />
             </TabsContent>
 
             {Object.entries(geneticMarkers).filter(([cat]) => cat !== 'hereditary').map(([category, markers]) => (
               <TabsContent key={category} value={category} className="space-y-4 mt-4">
-                {markers.map((marker, idx) => (
-                  <Card key={idx}>
-                    <CardContent className="pt-6 space-y-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-2 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-semibold text-lg">{marker.gene}</h4>
-                            <Badge variant={getStatusColor(marker.status) as any}>
-                              {getStatusLabel(marker.status)}
-                            </Badge>
-                            <Badge variant={getRiskColor(marker.risk) as any}>
-                              Риск: {getRiskLabel(marker.risk)}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground font-mono">
-                            {marker.variant}
-                          </p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm">{marker.description}</p>
-
-                      {marker.recommendations.length > 0 && (
-                        <>
-                          <Separator />
-                          <div className="space-y-2">
-                            <h5 className="text-sm font-medium flex items-center gap-2">
-                              <Icon name="Lightbulb" size={16} />
-                              Рекомендации
-                            </h5>
-                            <ul className="space-y-1">
-                              {marker.recommendations.map((rec, rIdx) => (
-                                <li key={rIdx} className="text-sm text-muted-foreground flex items-start gap-2">
-                                  <span className="text-primary mt-1">•</span>
-                                  <span>{rec}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                <GeneticMarkersTab markers={markers} />
               </TabsContent>
             ))}
           </Tabs>
@@ -758,10 +432,22 @@ const Genome = () => {
             <div className="space-y-2">
               <p className="font-medium">Важная информация о генетическом тестировании</p>
               <ul className="space-y-1 text-muted-foreground">
-                <li>• Генетические данные показывают предрасположенность, но не определяют судьбу</li>
-                <li>• Образ жизни, питание и окружающая среда играют ключевую роль</li>
-                <li>• Все результаты требуют консультации с врачом-генетиком</li>
-                <li>• Данные защищены и конфиденциальны</li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Генетические данные интерпретируются с учетом современных научных знаний и могут обновляться</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Наличие генетических вариантов не гарантирует развитие заболевания, а указывает на предрасположенность</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Рекомендации носят общий характер и должны быть скорректированы врачом с учетом индивидуальных особенностей</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Генетическое тестирование является дополнением к стандартному медицинскому обследованию</span>
+                </li>
               </ul>
             </div>
           </div>

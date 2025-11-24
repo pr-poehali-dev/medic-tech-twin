@@ -11,6 +11,7 @@ import AIAssistant from '@/components/AIAssistant';
 import Genome from '@/components/Genome';
 import HealthSchedule from '@/components/HealthSchedule';
 import FitnessTracker from '@/components/FitnessTracker';
+import DoctorPanel from '@/components/DoctorPanel';
 import DashboardTab from '@/components/dashboard/DashboardTab';
 import MedicationsTab from '@/components/dashboard/MedicationsTab';
 import SymptomsTab from '@/components/dashboard/SymptomsTab';
@@ -74,10 +75,14 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 md:grid-cols-12 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-7 md:grid-cols-14 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard" className="gap-2">
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
+            </TabsTrigger>
+            <TabsTrigger value="doctor" className="gap-2">
+              <Icon name="Stethoscope" size={16} />
+              <span className="hidden sm:inline">Врач</span>
             </TabsTrigger>
             <TabsTrigger value="fitness" className="gap-2">
               <Icon name="Watch" size={16} />
@@ -131,6 +136,10 @@ const Index = () => {
 
           <TabsContent value="dashboard">
             <DashboardTab aiRecommendations={aiRecommendations} />
+          </TabsContent>
+
+          <TabsContent value="doctor" className="space-y-6 animate-fade-in">
+            <DoctorPanel />
           </TabsContent>
 
           <TabsContent value="fitness" className="space-y-6 animate-fade-in">

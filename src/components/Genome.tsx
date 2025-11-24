@@ -22,8 +22,23 @@ interface ChromosomeData {
   variants: number;
 }
 
+interface FamilyMember {
+  id: string;
+  name: string;
+  relation: string;
+  age?: number;
+  deceased?: boolean;
+  diseases: {
+    name: string;
+    ageOnset: number;
+    status: 'active' | 'controlled' | 'resolved';
+  }[];
+  position: { x: number; y: number };
+  generation: number;
+}
+
 const Genome = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('cardiovascular');
+  const [selectedCategory, setSelectedCategory] = useState<string>('hereditary');
 
   const patientInfo = {
     name: 'Ким Джису',
@@ -61,6 +76,102 @@ const Genome = () => {
     { number: '22', size: '50 Мбп', genes: 488, variants: 75891 },
     { number: 'X', size: '155 Мбп', genes: 842, variants: 235467 },
     { number: 'Y', size: '-', genes: 0, variants: 0 }
+  ];
+
+  const familyTree: FamilyMember[] = [
+    {
+      id: 'grandmother-maternal',
+      name: 'Бабушка М',
+      relation: 'Бабушка по материнской линии',
+      age: 87,
+      deceased: false,
+      diseases: [
+        { name: 'Рак молочной железы', ageOnset: 67, status: 'resolved' },
+        { name: 'Остеопороз', ageOnset: 72, status: 'controlled' }
+      ],
+      position: { x: 0, y: 0 },
+      generation: 0
+    },
+    {
+      id: 'grandfather-maternal',
+      name: 'Дедушка М',
+      relation: 'Дедушка по материнской линии',
+      age: 85,
+      deceased: true,
+      diseases: [
+        { name: 'Инфаркт миокарда', ageOnset: 62, status: 'active' }
+      ],
+      position: { x: 1, y: 0 },
+      generation: 0
+    },
+    {
+      id: 'grandmother-paternal',
+      name: 'Бабушка О',
+      relation: 'Бабушка по отцовской линии',
+      age: 89,
+      deceased: false,
+      diseases: [
+        { name: 'Артериальная гипертензия', ageOnset: 55, status: 'controlled' }
+      ],
+      position: { x: 3, y: 0 },
+      generation: 0
+    },
+    {
+      id: 'grandfather-paternal',
+      name: 'Дедушка О',
+      relation: 'Дедушка по отцовской линии',
+      age: 82,
+      deceased: true,
+      diseases: [
+        { name: 'Рак легких', ageOnset: 70, status: 'active' }
+      ],
+      position: { x: 4, y: 0 },
+      generation: 0
+    },
+    {
+      id: 'mother',
+      name: 'Мать',
+      relation: 'Мать',
+      age: 54,
+      diseases: [
+        { name: 'Сахарный диабет 2 типа', ageOnset: 48, status: 'controlled' },
+        { name: 'Гипотиреоз', ageOnset: 45, status: 'controlled' }
+      ],
+      position: { x: 0.5, y: 1 },
+      generation: 1
+    },
+    {
+      id: 'aunt-maternal',
+      name: 'Тетя М',
+      relation: 'Тетя по материнской линии',
+      age: 51,
+      diseases: [
+        { name: 'Преддиабет', ageOnset: 49, status: 'controlled' },
+        { name: 'Узловой зоб', ageOnset: 47, status: 'controlled' }
+      ],
+      position: { x: 1.5, y: 1 },
+      generation: 1
+    },
+    {
+      id: 'father',
+      name: 'Отец',
+      relation: 'Отец',
+      age: 57,
+      diseases: [
+        { name: 'Язвенная болезнь желудка', ageOnset: 45, status: 'resolved' }
+      ],
+      position: { x: 3.5, y: 1 },
+      generation: 1
+    },
+    {
+      id: 'patient',
+      name: 'Ким Джису',
+      relation: 'Пациент',
+      age: 29,
+      diseases: [],
+      position: { x: 2, y: 2 },
+      generation: 2
+    }
   ];
 
   const geneticMarkers: Record<string, GeneticMarker[]> = {
@@ -418,7 +529,177 @@ const Genome = () => {
               </TabsTrigger>
             </TabsList>
 
-            {Object.entries(geneticMarkers).map(([category, markers]) => (
+            <TabsContent value="hereditary" className="space-y-4 mt-4">
+              <Card className="bg-gradient-to-br from-primary/5 to-background">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="GitBranch" size={20} />
+                    Семейное древо заболеваний
+                  </CardTitle>
+                  <CardDescription>
+                    Визуализация наследственных заболеваний в семье
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-8">
+                    {[0, 1, 2].map((generation) => {
+                      const members = familyTree.filter(m => m.generation === generation);
+                      const generationLabel = generation === 0 ? 'Бабушки и дедушки' : generation === 1 ? 'Родители' : 'Пациент';
+                      
+                      return (
+                        <div key={generation} className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              Поколение {generation + 1}
+                            </Badge>
+                            <span className="text-sm text-muted-foreground">{generationLabel}</span>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            {members.map((member) => (
+                              <Card 
+                                key={member.id} 
+                                className={`${member.id === 'patient' ? 'border-primary border-2' : ''} ${member.deceased ? 'opacity-60' : ''}`}
+                              >
+                                <CardContent className="pt-4 space-y-3">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="flex items-center gap-2">
+                                      <Icon 
+                                        name={member.id === 'patient' ? 'UserCircle' : 'User'} 
+                                        size={20} 
+                                        className={member.id === 'patient' ? 'text-primary' : 'text-muted-foreground'}
+                                      />
+                                      <div>
+                                        <h5 className="font-medium text-sm">{member.name}</h5>
+                                        <p className="text-xs text-muted-foreground">{member.relation}</p>
+                                      </div>
+                                    </div>
+                                    {member.deceased && (
+                                      <Badge variant="secondary" className="text-xs">✝</Badge>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <Icon name="Calendar" size={12} />
+                                    <span>{member.age} {member.deceased ? 'лет (умер)' : 'лет'}</span>
+                                  </div>
+
+                                  {member.diseases.length > 0 ? (
+                                    <div className="space-y-2">
+                                      <Separator />
+                                      <div className="space-y-1.5">
+                                        {member.diseases.map((disease, idx) => (
+                                          <div key={idx} className="space-y-1">
+                                            <div className="flex items-start gap-2">
+                                              <Icon 
+                                                name={
+                                                  disease.status === 'resolved' ? 'CheckCircle2' : 
+                                                  disease.status === 'controlled' ? 'ShieldCheck' : 
+                                                  'AlertCircle'
+                                                } 
+                                                size={14} 
+                                                className={
+                                                  disease.status === 'resolved' ? 'text-green-500 mt-0.5' : 
+                                                  disease.status === 'controlled' ? 'text-blue-500 mt-0.5' : 
+                                                  'text-destructive mt-0.5'
+                                                }
+                                              />
+                                              <div className="flex-1">
+                                                <p className="text-xs font-medium">{disease.name}</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                  В {disease.ageOnset} лет
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="text-xs text-muted-foreground italic pt-2 border-t">
+                                      Нет известных заболеваний
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <Separator className="my-6" />
+
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium flex items-center gap-2">
+                      <Icon name="Info" size={16} />
+                      Легенда статусов заболеваний
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Icon name="AlertCircle" size={16} className="text-destructive" />
+                        <span className="text-muted-foreground">Активное заболевание</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Icon name="ShieldCheck" size={16} className="text-blue-500" />
+                        <span className="text-muted-foreground">Под контролем</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Icon name="CheckCircle2" size={16} className="text-green-500" />
+                        <span className="text-muted-foreground">Вылечено</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {geneticMarkers.hereditary.map((marker, idx) => (
+                <Card key={idx}>
+                  <CardContent className="pt-6 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-2 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-semibold text-lg">{marker.gene}</h4>
+                          <Badge variant={getStatusColor(marker.status) as any}>
+                            {getStatusLabel(marker.status)}
+                          </Badge>
+                          <Badge variant={getRiskColor(marker.risk) as any}>
+                            Риск: {getRiskLabel(marker.risk)}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground font-mono">
+                          {marker.variant}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-sm">{marker.description}</p>
+
+                    {marker.recommendations.length > 0 && (
+                      <>
+                        <Separator />
+                        <div className="space-y-2">
+                          <h5 className="text-sm font-medium flex items-center gap-2">
+                            <Icon name="Lightbulb" size={16} />
+                            Рекомендации
+                          </h5>
+                          <ul className="space-y-1">
+                            {marker.recommendations.map((rec, rIdx) => (
+                              <li key={rIdx} className="text-sm text-muted-foreground flex items-start gap-2">
+                                <span className="text-primary mt-1">•</span>
+                                <span>{rec}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </TabsContent>
+
+            {Object.entries(geneticMarkers).filter(([cat]) => cat !== 'hereditary').map(([category, markers]) => (
               <TabsContent key={category} value={category} className="space-y-4 mt-4">
                 {markers.map((marker, idx) => (
                   <Card key={idx}>

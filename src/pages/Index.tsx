@@ -13,6 +13,7 @@ import HealthSchedule from '@/components/HealthSchedule';
 import FitnessTracker from '@/components/FitnessTracker';
 import DoctorPanel from '@/components/DoctorPanel';
 import DiseaseVisualization from '@/components/DiseaseVisualization';
+import ThyroidAnatomy3D from '@/components/ThyroidAnatomy3D';
 import DashboardTab from '@/components/dashboard/DashboardTab';
 import MedicationsTab from '@/components/dashboard/MedicationsTab';
 import SymptomsTab from '@/components/dashboard/SymptomsTab';
@@ -76,7 +77,7 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 md:grid-cols-15 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-8 md:grid-cols-16 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard" className="gap-2">
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
@@ -88,6 +89,10 @@ const Index = () => {
             <TabsTrigger value="disease" className="gap-2">
               <Icon name="GitBranch" size={16} />
               <span className="hidden sm:inline">Сценарии</span>
+            </TabsTrigger>
+            <TabsTrigger value="anatomy" className="gap-2">
+              <Icon name="Scan" size={16} />
+              <span className="hidden sm:inline">3D Анатомия</span>
             </TabsTrigger>
             <TabsTrigger value="fitness" className="gap-2">
               <Icon name="Watch" size={16} />
@@ -149,6 +154,10 @@ const Index = () => {
 
           <TabsContent value="disease" className="space-y-6 animate-fade-in">
             <DiseaseVisualization />
+          </TabsContent>
+
+          <TabsContent value="anatomy" className="space-y-6 animate-fade-in">
+            <ThyroidAnatomy3D />
           </TabsContent>
 
           <TabsContent value="fitness" className="space-y-6 animate-fade-in">

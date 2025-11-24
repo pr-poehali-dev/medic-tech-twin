@@ -9,6 +9,7 @@ import Recommendations from '@/components/Recommendations';
 import Prognosis from '@/components/Prognosis';
 import AIAssistant from '@/components/AIAssistant';
 import Genome from '@/components/Genome';
+import HealthSchedule from '@/components/HealthSchedule';
 import DashboardTab from '@/components/dashboard/DashboardTab';
 import MedicationsTab from '@/components/dashboard/MedicationsTab';
 import SymptomsTab from '@/components/dashboard/SymptomsTab';
@@ -72,10 +73,14 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 md:grid-cols-11 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-12 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard" className="gap-2">
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
+            </TabsTrigger>
+            <TabsTrigger value="schedule" className="gap-2">
+              <Icon name="CalendarCheck" size={16} />
+              <span className="hidden sm:inline">График</span>
             </TabsTrigger>
             <TabsTrigger value="genome" className="gap-2">
               <Icon name="Dna" size={16} />
@@ -121,6 +126,10 @@ const Index = () => {
 
           <TabsContent value="dashboard">
             <DashboardTab aiRecommendations={aiRecommendations} />
+          </TabsContent>
+
+          <TabsContent value="schedule" className="space-y-6 animate-fade-in">
+            <HealthSchedule />
           </TabsContent>
 
           <TabsContent value="genome" className="space-y-6 animate-fade-in">

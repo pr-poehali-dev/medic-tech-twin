@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import HumanBodyModel from '@/components/HumanBodyModel';
+import HealthDiary from '@/components/HealthDiary';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -66,10 +67,14 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard" className="gap-2">
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
+            </TabsTrigger>
+            <TabsTrigger value="diary" className="gap-2">
+              <Icon name="BookOpen" size={16} />
+              <span className="hidden sm:inline">Дневник</span>
             </TabsTrigger>
             <TabsTrigger value="medications" className="gap-2">
               <Icon name="Pill" size={16} />
@@ -168,6 +173,10 @@ const Index = () => {
                 ))}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="diary" className="space-y-6 animate-fade-in">
+            <HealthDiary />
           </TabsContent>
 
           <TabsContent value="medications" className="space-y-6 animate-fade-in">

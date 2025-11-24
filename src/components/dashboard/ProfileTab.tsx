@@ -20,7 +20,7 @@ const ProfileTab = () => {
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
             <Avatar className="w-20 h-20">
-              <AvatarFallback className="bg-primary text-white text-2xl">ИИ</AvatarFallback>
+              <AvatarFallback className="bg-primary text-white text-2xl">КД</AvatarFallback>
             </Avatar>
             <Button variant="outline">Изменить фото</Button>
           </div>
@@ -30,22 +30,22 @@ const ProfileTab = () => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="name">Имя</Label>
-              <Input id="name" defaultValue="Иван Иванов" />
+              <Input id="name" defaultValue="Ким Джису" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="age">Возраст</Label>
-              <Input id="age" type="number" defaultValue="45" />
+              <Input id="age" type="number" defaultValue="29" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="occupation" className="flex items-center gap-2">
                 <Icon name="Briefcase" size={16} />
                 Место работы
               </Label>
-              <Input id="occupation" placeholder="Должность, организация" defaultValue="Инженер, ООО Техпром" />
+              <Input id="occupation" placeholder="Должность, организация" defaultValue="Певица, актриса, YG Entertainment" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Телефон</Label>
-              <Input id="phone" type="tel" defaultValue="+7 (999) 123-45-67" />
+              <Input id="phone" type="tel" defaultValue="+82 10-1234-5678" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="blood">Группа крови</Label>
@@ -53,11 +53,11 @@ const ProfileTab = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="height">Рост (см)</Label>
-              <Input id="height" type="number" defaultValue="175" />
+              <Input id="height" type="number" defaultValue="162" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="weight">Вес (кг)</Label>
-              <Input id="weight" type="number" defaultValue="80" />
+              <Input id="weight" type="number" defaultValue="45" />
             </div>
           </div>
 

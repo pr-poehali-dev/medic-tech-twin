@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import CheckupTab from '@/components/schedule/CheckupTab';
+import VaccinationTab from '@/components/schedule/VaccinationTab';
+import ScreeningTab from '@/components/schedule/ScreeningTab';
 
 interface Checkup {
   age: string;
@@ -268,299 +266,44 @@ const HealthSchedule = () => {
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">График диспансеризации и вакцинации</h2>
         <p className="text-muted-foreground">
-          Персональный календарь профилактических осмотров и прививок
+          Планирование медицинских обследований и прививок в зависимости от возраста
         </p>
       </div>
-
-      <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Ваш возраст</p>
-              <p className="text-3xl font-bold">{currentAge} лет</p>
-            </div>
-            <div className="text-right space-y-1">
-              <p className="text-sm text-muted-foreground">Следующая диспансеризация</p>
-              <p className="text-lg font-semibold text-primary">15 ноября 2025</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       <Tabs defaultValue="checkups" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="checkups" className="gap-2">
-            <Icon name="ClipboardCheck" size={16} />
-            Диспансеризация
+            <Icon name="CalendarCheck" size={16} />
+            <span className="hidden sm:inline">Диспансеризация</span>
+            <span className="sm:hidden">Осмотры</span>
           </TabsTrigger>
           <TabsTrigger value="vaccinations" className="gap-2">
             <Icon name="Syringe" size={16} />
-            Вакцинация
+            <span className="hidden sm:inline">Вакцинация</span>
+            <span className="sm:hidden">Прививки</span>
           </TabsTrigger>
-          <TabsTrigger value="screening" className="gap-2">
+          <TabsTrigger value="screenings" className="gap-2">
             <Icon name="FileSearch" size={16} />
-            Скрининги
+            <span className="hidden sm:inline">Скрининги</span>
+            <span className="sm:hidden">Тесты</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="checkups" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Icon name="Calendar" size={24} />
-                Программа диспансеризации по возрастам
-              </CardTitle>
-              <CardDescription>
-                Обязательные медицинские обследования в разные периоды жизни
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {checkupSchedule.map((checkup, idx) => (
-                <Card key={idx} className={checkup.age.includes(currentAge.toString().split('-')[0]) ? 'border-primary' : ''}>
-                  <CardContent className="pt-6 space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-lg font-semibold">{checkup.age}</h4>
-                          {checkup.age.includes(currentAge.toString().split('-')[0]) && (
-                            <Badge variant="default">Ваш возраст</Badge>
-                          )}
-                          {checkup.completed && (
-                            <Badge variant="outline" className="gap-1">
-                              <Icon name="CheckCircle2" size={12} />
-                              Пройдена
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">Периодичность: {checkup.period}</p>
-                        {checkup.nextDate && (
-                          <p className="text-sm text-primary font-medium">Следующий осмотр: {new Date(checkup.nextDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <Separator />
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <h5 className="font-medium text-sm flex items-center gap-2">
-                          <Icon name="TestTube" size={16} />
-                          Обследования
-                        </h5>
-                        <ul className="space-y-1">
-                          {checkup.examinations.map((exam, eIdx) => (
-                            <li key={eIdx} className="text-sm text-muted-foreground flex items-start gap-2">
-                              <Icon name="Check" size={14} className="text-primary mt-0.5 flex-shrink-0" />
-                              <span>{exam}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="space-y-2">
-                        <h5 className="font-medium text-sm flex items-center gap-2">
-                          <Icon name="UserCircle" size={16} />
-                          Консультации специалистов
-                        </h5>
-                        <ul className="space-y-1">
-                          {checkup.specialists.map((specialist, sIdx) => (
-                            <li key={sIdx} className="text-sm text-muted-foreground flex items-start gap-2">
-                              <Icon name="Check" size={14} className="text-primary mt-0.5 flex-shrink-0" />
-                              <span>{specialist}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    {checkup.nextDate && (
-                      <Button className="w-full" variant={checkup.completed ? "outline" : "default"}>
-                        <Icon name="CalendarPlus" size={16} />
-                        {checkup.completed ? 'Запланировать следующую' : 'Записаться на диспансеризацию'}
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </CardContent>
-          </Card>
+          <CheckupTab checkupSchedule={checkupSchedule} currentAge={currentAge} />
         </TabsContent>
 
         <TabsContent value="vaccinations" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Icon name="Syringe" size={24} />
-                График вакцинации по возрастам
-              </CardTitle>
-              <CardDescription>
-                Рекомендованные прививки для взрослых
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {ageBasedVaccinations.map((group, idx) => (
-                <Card key={idx} className={group.isCurrentAge ? 'border-primary bg-primary/5' : ''}>
-                  <CardContent className="pt-6 space-y-3">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold">{group.ageGroup}</h4>
-                      {group.isCurrentAge && <Badge>Ваш возраст</Badge>}
-                    </div>
-                    <ul className="space-y-2">
-                      {group.vaccines.map((vaccine, vIdx) => (
-                        <li key={vIdx} className="text-sm flex items-start gap-2">
-                          <Icon name="Syringe" size={14} className="text-primary mt-0.5 flex-shrink-0" />
-                          <span>{vaccine}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Icon name="Calendar" size={24} />
-                Индивидуальный календарь вакцинации
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <h4 className="font-medium flex items-center gap-2">
-                  <Icon name="AlertCircle" size={18} className="text-primary" />
-                  Обязательные и рекомендуемые
-                </h4>
-                {vaccinationSchedule.filter(v => v.isRecommended).map((vaccine, idx) => (
-                  <Card key={idx} className={vaccine.completed ? 'bg-secondary/30' : 'border-primary'}>
-                    <CardContent className="pt-4 space-y-2">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h5 className="font-semibold">{vaccine.vaccine}</h5>
-                            {vaccine.completed ? (
-                              <Badge variant="outline" className="gap-1">
-                                <Icon name="CheckCircle2" size={12} />
-                                Выполнена
-                              </Badge>
-                            ) : (
-                              <Badge variant="destructive">Требуется</Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{vaccine.age} • {vaccine.doses} доз(а/ы)</p>
-                          <p className="text-sm">{vaccine.description}</p>
-                          {vaccine.nextDate && (
-                            <p className="text-sm text-primary font-medium">
-                              Следующая доза: {new Date(vaccine.nextDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
-                            </p>
-                          )}
-                        </div>
-                        <Button size="sm" variant={vaccine.completed ? "outline" : "default"}>
-                          <Icon name="Calendar" size={14} />
-                          Записаться
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              <Separator />
-
-              <div className="space-y-3">
-                <h4 className="font-medium flex items-center gap-2">
-                  <Icon name="Info" size={18} className="text-muted-foreground" />
-                  Дополнительные (по показаниям)
-                </h4>
-                {vaccinationSchedule.filter(v => !v.isRecommended).map((vaccine, idx) => (
-                  <Card key={idx} className="bg-secondary/20">
-                    <CardContent className="pt-4 space-y-2">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1 flex-1">
-                          <h5 className="font-semibold">{vaccine.vaccine}</h5>
-                          <p className="text-sm text-muted-foreground">{vaccine.age} • {vaccine.doses} доз(а/ы)</p>
-                          <p className="text-sm">{vaccine.description}</p>
-                        </div>
-                        {vaccine.completed && (
-                          <Badge variant="outline" className="gap-1">
-                            <Icon name="CheckCircle2" size={12} />
-                            Выполнена
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <VaccinationTab 
+            vaccinationSchedule={vaccinationSchedule} 
+            ageBasedVaccinations={ageBasedVaccinations}
+          />
         </TabsContent>
 
-        <TabsContent value="screening" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Icon name="FileSearch" size={24} />
-                Специализированные скрининги
-              </CardTitle>
-              <CardDescription>
-                Профилактические обследования по направлениям
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {screeningByAge.map((category, idx) => (
-                <Card key={idx}>
-                  <CardContent className="pt-6 space-y-4">
-                    <h4 className="font-semibold text-lg flex items-center gap-2">
-                      <Icon name={category.icon as any} size={20} className="text-primary" />
-                      {category.category}
-                    </h4>
-                    <div className="space-y-3">
-                      {category.screenings.map((screening, sIdx) => (
-                        <div key={sIdx} className={`flex items-start justify-between gap-4 p-3 rounded-lg ${screening.current ? 'bg-primary/10' : 'bg-secondary/20'}`}>
-                          <div className="space-y-1 flex-1">
-                            <div className="flex items-center gap-2">
-                              <h5 className="font-medium">{screening.name}</h5>
-                              {screening.current && <Badge variant="default">Актуально</Badge>}
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                              Возраст: {screening.age} • {screening.frequency}
-                            </p>
-                          </div>
-                          {screening.current && (
-                            <Button size="sm" variant="outline">
-                              <Icon name="CalendarPlus" size={14} />
-                              Записаться
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </CardContent>
-          </Card>
+        <TabsContent value="screenings" className="space-y-4">
+          <ScreeningTab screeningByAge={screeningByAge} />
         </TabsContent>
       </Tabs>
-
-      <Card className="bg-primary/5 border-primary/20">
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-3 text-sm">
-            <Icon name="Info" size={20} className="text-primary mt-0.5 flex-shrink-0" />
-            <div className="space-y-2">
-              <p className="font-medium">Важная информация</p>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• Диспансеризация проводится бесплатно по полису ОМС</li>
-                <li>• Вакцинация взрослых по календарю прививок - бесплатна в поликлинике</li>
-                <li>• График может корректироваться врачом с учетом состояния здоровья</li>
-                <li>• Некоторые прививки требуют предварительной консультации</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

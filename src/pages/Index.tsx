@@ -10,6 +10,7 @@ import Icon from '@/components/ui/icon';
 import HumanBodyModel from '@/components/HumanBodyModel';
 import HealthDiary from '@/components/HealthDiary';
 import Lifestyle from '@/components/Lifestyle';
+import Recommendations from '@/components/Recommendations';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -68,7 +69,7 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto lg:inline-grid">
             <TabsTrigger value="dashboard" className="gap-2">
               <Icon name="LayoutDashboard" size={16} />
               <span className="hidden sm:inline">Панель</span>
@@ -76,6 +77,10 @@ const Index = () => {
             <TabsTrigger value="diary" className="gap-2">
               <Icon name="BookOpen" size={16} />
               <span className="hidden sm:inline">Дневник</span>
+            </TabsTrigger>
+            <TabsTrigger value="recommendations" className="gap-2">
+              <Icon name="ClipboardList" size={16} />
+              <span className="hidden sm:inline">Рекомендации</span>
             </TabsTrigger>
             <TabsTrigger value="lifestyle" className="gap-2">
               <Icon name="HeartPulse" size={16} />
@@ -182,6 +187,10 @@ const Index = () => {
 
           <TabsContent value="diary" className="space-y-6 animate-fade-in">
             <HealthDiary />
+          </TabsContent>
+
+          <TabsContent value="recommendations" className="space-y-6 animate-fade-in">
+            <Recommendations />
           </TabsContent>
 
           <TabsContent value="lifestyle" className="space-y-6 animate-fade-in">
